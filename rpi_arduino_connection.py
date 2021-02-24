@@ -36,13 +36,20 @@ def read_file():
 
 def send_to_Arduino(floor, row):
     # Sending floor and row to the Arduino
+    send_String = "{} {}\n".format(floor, row)
+    answer = "0"
     if __name__ == '__main__':
         ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
         ser.flush()
-    while True:
-        ser.write(floor)
-        ser.write(row)
+    while answer == "0":
+        ser.write(send_String)
         time.sleep(1)
+        while True:
+            if ser.in_waiting > 0:
+                answer = ser.readline().decode('utf-8').rstrip()
+                print(answer)
+                if(answer == "finished"):
+                    break
 
 while(1):
     read_file()
