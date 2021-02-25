@@ -2,8 +2,10 @@ import serial
 import os
 import time
 
+answer = "0"
 # reading the file
 def read_file():
+    global answer
     floor = 0
     row = 0
     count = 1
@@ -27,29 +29,34 @@ def read_file():
         print(floor, row)
         count_while = count_while + 1
     send_to_Arduino(floor, row)
+    answer = "0"
     file1.close()
 # Deleting the file
-    if os.path.exists(input):
-        os.remove(input)
-    else:
-        print("The file does not exist")
+    #if os.path.exists(input):
+        #print("deleted")
+        #os.remove(input)
+    #else:
+        #print("The file does not exist")
 
 def send_to_Arduino(floor, row):
     # Sending floor and row to the Arduino
-    send_String = "{} {}\n".format(floor, row)
-    answer = "0"
+    global answer
+    send_String = "{}{}\n".format(floor, row)
     if __name__ == '__main__':
-        ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
         ser.flush()
     while answer == "0":
-        ser.write(send_String)
-        time.sleep(1)
+        ser.write(send_String.encode())
         while True:
             if ser.in_waiting > 0:
                 answer = ser.readline().decode('utf-8').rstrip()
                 print(answer)
-                if(answer == "finished"):
+                #time.sleep(1)
+                if(answer == "y"):
+                    print("bennt")
                     break
+
 
 while(1):
     read_file()
+    print("End")
