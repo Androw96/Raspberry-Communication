@@ -53,7 +53,7 @@ def send_to_Arduino(floor, row):
                 print(answer)
 <<<<<<< Updated upstream
                 #time.sleep(1)
-                if(answer == "y"):
+                if(answer == "fin"):
                     print("bennt")
 =======
                 # Arduino has sent the "finished" answer
