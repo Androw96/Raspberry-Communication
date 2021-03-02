@@ -1,17 +1,23 @@
 import serial
 import os
 import time
+import zmq
 
 answer = "0"
+floor = 0
+row = 0
+count = 1
+count_while = 1
+input = "input.txt"
+
 # reading the file
 def read_file():
     global answer
-    floor = 0
-    row = 0
-    count = 1
+    global floor
+    global row
+    global count
     count_while = 1
     input = "input.txt"
-
 # File reading
     while(count_while < 2):
         file1 = open(input, 'r')
@@ -31,12 +37,14 @@ def read_file():
     send_to_Arduino(floor, row)
     answer = "0"
     file1.close()
+
 # Deleting the file
-    #if os.path.exists(input):
-        #print("deleted")
-        #os.remove(input)
-    #else:
-        #print("The file does not exist")
+def deletingFile():
+    if os.path.exists(input):
+        print("deleted")
+        os.remove(input)
+    else:
+        print("The file does not exist")
 
 def send_to_Arduino(floor, row):
     # Sending floor and row to the Arduino
@@ -51,17 +59,43 @@ def send_to_Arduino(floor, row):
             if ser.in_waiting > 0:
                 answer = ser.readline().decode('utf-8').rstrip()
                 print(answer)
-<<<<<<< Updated upstream
                 #time.sleep(1)
                 if(answer == "fin"):
                     print("bennt")
-=======
-                # Arduino has sent the "finished" answer
-                if(answer == "finished"):
->>>>>>> Stashed changes
                     break
 
+def zmq_pub():
+    context = zmq.Context()
+    socket = context.socket(zmq.PUB)
+    socket.bind('tcp://127.0.0.1:2000')
+    global floor
+    global row
+    floor = 6
+    row = 5
+    message = [floor, row]
+    curMsg = 0
+
+    while(True):
+        time.sleep(1)
+        socket.send_pyobj({curMsg:message[curMsg]})
+        if(curMsg == 1):
+            break
+        else:
+            curMsg = curMsg + 1
+
+def zmq_sub():
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
+    socket.connect('tcp://127.0.0.1:2000')
+    socket.setsockopt(zmq.SUBSCRIBE, '')
+
+    while(True):
+        message = socket.recv_pyobj()
+        if(message != None):
+            print(message)
+            break
 
 while(1):
-    read_file()
-    print("End")
+    zmq_sub();
+    print("End of Subscription...\n Starting again... ")
+    time.sleep(1)

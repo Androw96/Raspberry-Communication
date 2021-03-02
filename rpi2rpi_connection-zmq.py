@@ -27,11 +27,14 @@ def zmq_sub():
     socket = context.socket(zmq.SUB)
     socket.connect('tcp://127.0.0.1:2000')
     socket.setsockopt(zmq.SUBSCRIBE, '')
-
+    curMsg = 0;
     while(True):
         message = socket.recv_pyobj()
-        if(message != None):
+        if(curMsg == 1):
             print(message)
             break
 
 while(1):
+    zmq_pub()
+    print("End of Publish...\n Starting again...")
+    time.sleep(1)
