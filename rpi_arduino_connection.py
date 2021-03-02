@@ -51,9 +51,14 @@ def send_to_Arduino(floor, row):
             if ser.in_waiting > 0:
                 answer = ser.readline().decode('utf-8').rstrip()
                 print(answer)
+<<<<<<< Updated upstream
                 #time.sleep(1)
                 if(answer == "y"):
                     print("bennt")
+=======
+                # Arduino has sent the "finished" answer
+                if(answer == "finished"):
+>>>>>>> Stashed changes
                     break
 
 
