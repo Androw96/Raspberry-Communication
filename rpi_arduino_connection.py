@@ -9,6 +9,7 @@ row = 0
 count = 1
 count_while = 1
 input = "input.txt"
+curMsg = 0
 
 # reading the file
 def read_file():
@@ -84,18 +85,31 @@ def zmq_pub():
             curMsg = curMsg + 1
 
 def zmq_sub():
+    global floor, row
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
     socket.connect('tcp://127.0.0.1:2000')
-    socket.setsockopt(zmq.SUBSCRIBE, '')
-
-    while(True):
+    socket.setsockopt(zmq.SUBSCRIBE, b'')
+    global curMsg
+    while (True):
         message = socket.recv_pyobj()
-        if(message != None):
+        if(curMsg == 0):
+            floor = message
+        if (curMsg == 1):
             print(message)
+            row = message
+            curMsg = 0
             break
+        else:
+            print(message)
+            curMsg = curMsg + 1
+
+
 
 while(1):
     zmq_sub();
+    print(type(floor))
+    print(type(row))
     print("End of Subscription...\n Starting again... ")
+    print("Value of Floor is: {},\n Value of Row is: {}".format(floor, row))
     time.sleep(1)
