@@ -5,7 +5,7 @@ import sys
 
 while True:
 
-    msg = 'C:\Pi\input.txt'
+    msg = '/home/pi/Raspberry-Communication/input.txt'
 
     # Preparing context
     context = zmq.Context()
@@ -13,7 +13,7 @@ while True:
     publisher.bind("tcp://*:2002")
     time.sleep(1)
 
-    curFile = 'C:\Pi\input.txt'
+    curFile = '/home/pi/Raspberry-Communication/input.txt'
     size = os.stat(curFile).st_size
     print('File size: '.format(size))
 
