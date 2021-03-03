@@ -108,8 +108,6 @@ def zmq_sub():
 
 while(1):
     zmq_sub();
-    print(type(floor))
-    print(type(row))
     print("End of Subscription...\n Starting again... ")
     print("Value of Floor is: {},\n Value of Row is: {}".format(floor, row))
     time.sleep(1)
