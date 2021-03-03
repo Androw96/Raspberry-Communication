@@ -7,7 +7,6 @@ answer = "0"
 floor = 0
 row = 0
 count = 1
-count_while = 1
 input = "input.txt"
 curMsg = 0
 
@@ -17,8 +16,8 @@ def read_file():
     global floor
     global row
     global count
+    global input
     count_while = 1
-    input = "input.txt"
 # File reading
     while(count_while < 2):
         file1 = open(input, 'r')
@@ -35,7 +34,7 @@ def read_file():
             count = count+1
         print(floor, row)
         count_while = count_while + 1
-    send_to_Arduino(floor, row)
+    #send_to_Arduino(floor, row)
     answer = "0"
     file1.close()
 
@@ -47,9 +46,11 @@ def deletingFile():
     else:
         print("The file does not exist")
 
-def send_to_Arduino(floor, row):
+def send_to_Arduino():
     # Sending floor and row to the Arduino
     global answer
+    global floor
+    global row
     send_String = "{}{}\n".format(floor, row)
     if __name__ == '__main__':
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
@@ -64,50 +65,53 @@ def send_to_Arduino(floor, row):
                 if(answer == "fin"):
                     print("bennt")
                     break
-
+                
 def zmq_pub():
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.bind('tcp://127.0.0.1:2000')
     global floor
     global row
-    floor = 6
-    row = 5
     message = [floor, row]
     curMsg = 0
 
     while(True):
         time.sleep(1)
-        socket.send_pyobj({curMsg:message[curMsg]})
         if(curMsg == 1):
+            socket.send_pyobj(row)
+            curMsg = 0
             break
         else:
+            socket.send_pyobj(floor)
             curMsg = curMsg + 1
 
 def zmq_sub():
-    global floor, row
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
     socket.connect('tcp://127.0.0.1:2000')
     socket.setsockopt(zmq.SUBSCRIBE, b'')
+    print("belepek a whileba")
     global curMsg
-    while (True):
+    global floor
+    global row
+    while(1):
         message = socket.recv_pyobj()
-        if(curMsg == 0):
-            floor = message
-        if (curMsg == 1):
+        print("Megkapja")
+        if(curMsg == 1):
             print(message)
             row = message
             curMsg = 0
             break
         else:
-            print(message)
+            floor = message
+            print(floor)
             curMsg = curMsg + 1
-
+            
 
 
 while(1):
     zmq_sub();
     print("End of Subscription...\n Starting again... ")
     print("Value of Floor is: {},\n Value of Row is: {}".format(floor, row))
+    
     time.sleep(1)
