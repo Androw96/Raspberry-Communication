@@ -95,6 +95,7 @@ def zmq_sub():
     global floor
     global row
     while(1):
+        print("Fogadnam az adatot")
         message = socket.recv_pyobj()
         print("Megkapja")
         if(curMsg == 1):
