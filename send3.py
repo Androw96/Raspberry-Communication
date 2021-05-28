@@ -31,15 +31,16 @@ def read_file():
             count = count+1
         count_while = count_while + 1
     file1.close()
+while(1):
     
-unique_num = 3
-read_file()
-UDP_IP = "169.254.129.26"
-UDP_PORT = 5005
-MESSAGE = "{}{}{}{}\n".format(floor, row, in_out, unique_num)
-print "UDP target IP:", UDP_IP
-print "UDP target port:", UDP_PORT
-print "message:", MESSAGE
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+    unique_num = 3
+    read_file()
+    UDP_IP = "169.254.129.26"
+    UDP_PORT = 5005
+    MESSAGE = "{}{}{}{}\n".format(floor, row, in_out, unique_num)
+    print "UDP target IP:", UDP_IP
+    print "UDP target port:", UDP_PORT
+    print "message:", MESSAGE
+    sock = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+    sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
