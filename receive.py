@@ -8,7 +8,7 @@ def send_to_Arduino(data):
     send_String = data
     print data
     print type(data)
-    """if __name__ == '__main__':
+    if __name__ == '__main__':
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
         ser.flush()
     while answer == "0":
@@ -20,7 +20,7 @@ def send_to_Arduino(data):
                 #time.sleep(1)
                 if(answer == "fin"):
                     print("bennt")
-                    break*/"""
+                    break*/
 
 UDP_IP = "0.0.0.0"
 UDP_PORT = 5005
