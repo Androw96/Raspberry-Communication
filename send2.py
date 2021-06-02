@@ -7,7 +7,7 @@ floor = 0
 row = 0
 in_out = 0
 trueornot = True
-filename = "input.txt"
+filename = '/home/pi/Raspberry-Communication/input.txt'
         
 def read_file():
     global floor
@@ -15,11 +15,11 @@ def read_file():
     global in_out
     count = 1
     global filename
-    filename = "input.txt"
     global trueornot
 # File reading
     try:
-            
+        print("Keres!")
+        print(filename)
         file1 = open(filename, 'r')
         if(file1 == 0):
             print("Nem tudtam megnyitni a file-t")
@@ -64,7 +64,6 @@ unique_num = 2
     
 while(1):
     read_file()
-    print(floor)
     if(trueornot == True):
         MESSAGE = "{}\n{}\n{}\n{}\n".format(floor, row, in_out, unique_num)
         print "UDP target IP:", UDP_IP
