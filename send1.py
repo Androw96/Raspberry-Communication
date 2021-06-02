@@ -7,7 +7,7 @@ floor = 0
 row = 0
 in_out = 0
 trueornot = True
-filename = "input.txt"
+filename = "/home/pi/Raspberry-Communication/input.txt"
         
 def read_file():
     global floor
@@ -15,7 +15,6 @@ def read_file():
     global in_out
     count = 1
     global filename
-    filename = "input.txt"
     global trueornot
 # File reading
     try:
