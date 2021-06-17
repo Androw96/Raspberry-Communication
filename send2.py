@@ -3,6 +3,8 @@ import socket
 import time
 import os
 
+code = 0
+_from = 0
 floor = 0
 row = 0
 in_out = 0
@@ -11,8 +13,13 @@ filename = '/home/pi/Raspberry-Communication/input.txt'
         
 def read_file():
     global floor
+    global code
     global row
     global in_out
+    global _from
+    global _from2
+    global _to
+    global _to2
     count = 1
     global filename
     global trueornot
@@ -31,13 +38,20 @@ def read_file():
             print("for olvasok")
             if(count == 1):
                 line = line.rstrip()
-                floor = line
+                code = line
             elif(count == 2):
                 line = line.rstrip()
-                row = line
+                _from = line
             elif(count == 3):
                 line = line.rstrip()
-                in_out = line
+                 _from2 = line
+            elif(count == 4):
+                line = line.rstrip()
+                 _to = line
+            elif(count == 5):
+                line = line.rstrip()
+                 _to2 = line
+                 
             count = count+1
         print("Torolnek")
         trueornot = True
@@ -65,14 +79,25 @@ unique_num = 2
 while(1):
     read_file()
     if(trueornot == True):
-        MESSAGE = "{}\n{}\n{}\n{}\n".format(floor, row, in_out, unique_num)
+        if(code == "101"):
+            _from = unique_num
+            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+        if(code == "102"):
+            _to = unique_num
+            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+        if(code == "103"):
+            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+        if(code == "104"):
+            _to = unique_num
+            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+        if(code == "105"):
+            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            
         print "UDP target IP:", UDP_IP
         print "UDP target port:", UDP_PORT
         print "message:", MESSAGE
         sock = socket.socket(socket.AF_INET, # Internet
                              socket.SOCK_DGRAM) # UDP
         sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
-        floor = 0
-        row = 0
-        in_out = 0
+        code, _from, _from2, _to, _to2 = 0
     time.sleep(1)
