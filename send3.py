@@ -44,13 +44,13 @@ def read_file():
                 _from = line
             elif(count == 3):
                 line = line.rstrip()
-                 _from2 = line
+                _from2 = line
             elif(count == 4):
                 line = line.rstrip()
-                 _to = line
+                _to = line
             elif(count == 5):
                 line = line.rstrip()
-                 _to2 = line
+                _to2 = line
                  
             count = count+1
         print("Torolnek")
@@ -99,6 +99,12 @@ while(1):
         sock = socket.socket(socket.AF_INET, # Internet
                              socket.SOCK_DGRAM) # UDP
         sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
-        code, _from, _from2, _to, _to2 = 0
+        code = 0
+        _from = 0
+        _from2 = 0
+        _to = 0
+        _to2 = 0
+        
     time.sleep(1)
+
 
