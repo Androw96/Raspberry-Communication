@@ -71,10 +71,10 @@ def deletingFile():
         print("The file does not exist")
 
 
-# Level3
+# Level2
 UDP_IP = "169.254.129.26"
 UDP_PORT = 5005
-unique_num = 2
+unique_num = 1
 
 while (1):
     read_file()
