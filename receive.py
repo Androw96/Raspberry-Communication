@@ -3,25 +3,17 @@ import os
 import time
 import serial
 
+path = '/dev/ttyS0' 
+ser = serial.Serial(path, 9600)
+
 def send_to_Arduino(data):
-    # Sending floor and row to the Arduino
-    path = '/dev/ttyAMA0'   
+    # Sending floor and row to the Arduin  
     send_String = data
     
-    if __name__ == '__main__':
-        try:
-            ser = serial.Serial(path, 9600)
-            ser.write(send_String.encode())
-        except:
-            try:
-                path = '/dev/ttyAMA1'
-                ser = serial.Serial(path, 9600)
-                    ser.write(send_String.encode())
-            except:
-                path = '/dev/ttyAMA2'
-                ser = serial.Serial(path, 9600)
-                ser.write(send_String.encode())
-            
+    try:
+        ser.write(send_String.encode())
+    except:
+        print("NO SERIAL")
             
 UDP_IP = "0.0.0.0"
 UDP_PORT = 5005
