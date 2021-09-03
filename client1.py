@@ -105,7 +105,6 @@ def Send_recv(MESSAGE):
 
 def createGet(Input):
     global connection
-
     mycursor = connection.cursor()
     sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
     val = ("get_process", str(Input), "Process from Arduino")
@@ -118,7 +117,7 @@ def main():
     global trueornot
     global code
 
-    unique_num = 0
+    unique_num = 1
 
     read_file()
     if (trueornot == True):

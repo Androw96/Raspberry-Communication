@@ -118,7 +118,7 @@ def main():
     global trueornot
     global code
 
-    unique_num = 0
+    unique_num = 2
 
     read_file()
     if (trueornot == True):
