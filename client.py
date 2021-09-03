@@ -16,6 +16,23 @@ context = zmq.Context()
 socket = context.socket(zmq.REQ)
 socket.connect ("tcp://169.254.235.189:1717")
 
+sshtunnel.SSH_TIMEOUT = 5.0
+sshtunnel.TUNNEL_TIMEOUT = 5.0
+
+global connection
+
+with sshtunnel.SSHTunnelForwarder(
+    ('ssh.pythonanywhere.com'),
+    ssh_username='Ozymandias', ssh_password='Androw96',
+    remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+) as tunnel:
+    connection = MySQLdb.connect(
+        user='Ozymandias',
+        passwd='Androw96',
+        host='127.0.0.1', port=tunnel.local_bind_port,
+        db='Ozymandias$SmartWarehouseSystem',
+    )
+
 def read_file():
     global code
     global _from
@@ -85,10 +102,16 @@ def Send_recv(MESSAGE):
         message = socket.recv()
         createGet(message)
 
-def createGet(message):
-    file_path = '/home/pi/Raspberry-Communication/get.txt'
-    with open(file_path, 'w') as f:
-    f.write(message)
+def createGet(Input):
+    global connection
+    
+    if(Input == ) 
+    mycursor = connection.cursor()
+    sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
+    val = ("get_process", "63", "")
+    mycursor.execute(sql, val)
+    connection.commit()
+    print("done")
     
     
 def main():
