@@ -26,11 +26,11 @@ def send_to_Arduino(data):
 def flush_buffer():
     print("Deleting the buffer")
     for i in range(64):
-        print(i)
         ser.read()
         
 def read_from_Arduino():
     flush_buffer()
+    message = {}
     while(1):
         print("olvasnek")
         i = ser.read()
@@ -38,7 +38,7 @@ def read_from_Arduino():
         #i = int(i, 16)
         #print(type(i))
         if(i == -126):
-            for j in range(5): 
+            for j in range(5):
                 message[j] = ser.read()
                 print(message[j])
             if(ser.read() != -125):
@@ -46,21 +46,24 @@ def read_from_Arduino():
                 print("Order Fail!")
             else:
                 #Right Order
-                return message
-        else:
-            print(i)
+                flush_buffer()
+                return message[0]
+
+
                 
                 
 def communicate():
+        Input = ""
         #  Wait for next request from client
-        #message = socket.recv()
+        message = socket.recv()
         #print "Received request: ", message
         print("communicate")
         time.sleep (1)
-        #send_to_Arduino(message)
-        Input = read_from_Arduino()
-        print(Input)
-        socket.send(Input)
+        send_to_Arduino(message)
+        while((Input != "64") or (Input != "40")):
+            Input = read_from_Arduino()
+            print(Input)
+            socket.send(Input)
 
 while(1):
     communicate()

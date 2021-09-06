@@ -96,12 +96,13 @@ def deletingFile():
 
 #  Do 10 requests, waiting each time for a response
 def Send_recv(MESSAGE):
-
+        Input = ""
         print("Sending request ")
         socket.send (MESSAGE)
         #  Get the reply.
-        Input = socket.recv()
-        createGet(Input)
+        while((Input != "64") or (Input != "40")):
+            Input = socket.recv()
+            createGet(Input)
 
 def createGet(Input):
     global connection
