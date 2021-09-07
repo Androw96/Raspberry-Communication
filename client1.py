@@ -13,11 +13,11 @@ trueornot = True
 filename = '/home/pi/Raspberry-Communication/input.txt'
 
 port = "1717"
-    
+
 print("Connecting to server...")
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
-socket.connect ("tcp://169.254.235.189:1717")
+socket.connect("tcp://169.254.235.189:1717")
 
 sshtunnel.SSH_TIMEOUT = 5.0
 sshtunnel.TUNNEL_TIMEOUT = 5.0
@@ -25,9 +25,9 @@ sshtunnel.TUNNEL_TIMEOUT = 5.0
 global connection
 
 with sshtunnel.SSHTunnelForwarder(
-    ('ssh.pythonanywhere.com'),
-    ssh_username='Ozymandias', ssh_password='Androw96',
-    remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+        ('ssh.pythonanywhere.com'),
+        ssh_username='Ozymandias', ssh_password='Androw96',
+        remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
 ) as tunnel:
     connection = MySQLdb.connect(
         user='Ozymandias',
@@ -35,6 +35,7 @@ with sshtunnel.SSHTunnelForwarder(
         host='127.0.0.1', port=tunnel.local_bind_port,
         db='Ozymandias$SmartWarehouseSystem',
     )
+
 
 def read_file():
     global code
@@ -94,25 +95,29 @@ def deletingFile():
     else:
         print("The file does not exist")
 
+
 #  Do 10 requests, waiting each time for a response
 def Send_recv(MESSAGE):
-
-        print("Sending request ")
-        socket.send (MESSAGE)
-        #  Get the reply.
+    Input = ""
+    print("Sending request ")
+    socket.send(MESSAGE)
+    #  Get the reply.
+    while ((Input != "64") or (Input != "40")):
         Input = socket.recv()
         createGet(Input)
 
+
 def createGet(Input):
     global connection
+
     mycursor = connection.cursor()
     sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
     val = ("get_process", str(Input), "Process from Arduino")
     mycursor.execute(sql, val)
     connection.commit()
     print("done")
-    
-    
+
+
 def main():
     global trueornot
     global code
@@ -140,14 +145,14 @@ def main():
         if (code == "108"):
             _from = unique_num
             MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
-        
+
         Send_recv(MESSAGE)
         code = 0
         _from = 0
         _from2 = 0
         _to = 0
         _to2 = 0
-       
-while(1):
+
+
+while (1):
     main()
-    

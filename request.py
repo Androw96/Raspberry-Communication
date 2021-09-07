@@ -62,6 +62,7 @@ def communicate():
         send_to_Arduino(message)
         while((Input != "64") or (Input != "40")):
             Input = read_from_Arduino()
+            Input = "64"
             print(Input)
             socket.send(Input)
 
