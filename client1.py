@@ -121,6 +121,10 @@ def createGet(Input):
 def main():
     global trueornot
     global code
+    global _from
+    global _from2
+    global _to
+    global _to2
 
     unique_num = 1
 
