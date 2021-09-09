@@ -3,15 +3,11 @@ import time
 import sys
 import serial
 
+global socket
+
 path = '/dev/ttyS0'
 ser = serial.Serial(path, 19200)
 
-port = "1717"
-host = "169.254.129.26"
-
-context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://169.254.129.26:1717")
 
 
 def send_to_Arduino(data):
@@ -53,10 +49,15 @@ def read_from_Arduino():
                 
                 
 def communicate():
+
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+        socket.bind("tcp://169.254.129.26:1717")
+        
         Input = ""
         #  Wait for next request from client
-        message = socket.recv()
-        #print "Received request: ", message
+        message = socket.recv_pyobj()
+        print("Received request: ", message)
         print("communicate")
         time.sleep (1)
         send_to_Arduino(message)
