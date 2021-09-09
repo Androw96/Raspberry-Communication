@@ -81,23 +81,23 @@ while (1):
     if (trueornot == True):
         if (code == "102"):
             _from = unique_num
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "103"):
             _to = unique_num
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "104"):
             _to = unique_num
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "105"):
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "106"):
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "107"):
             _from = unique_num
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
         if (code == "108"):
             _from = unique_num
-            MESSAGE = "{}\n{}\n{}\n{}\n{}\n".format(code, _from, _from2, _to, _to2)
+            MESSAGE = [code, _from, _from2, _to, _to2]
 
         print
         "UDP target IP:", UDP_IP

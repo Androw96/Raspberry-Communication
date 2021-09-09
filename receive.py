@@ -48,13 +48,14 @@ def read_from_Arduino():
 def send_to_Arduino(data):
     # Sending floor and row to the Arduin
     global ser
-    send_String = "-130\n%s\n-131"%data
-    
-    #try:
-    print(send_String)
-    ser.write(send_String.encode())
-    '''except:
-        print("NO SERIAL")'''
+
+    for i in range(5):
+    try:
+        message = data[i]
+        print(message)
+        ser.write(message.encode())
+    except:
+        print("NO SERIAL")
 
 
 UDP_IP = "0.0.0.0"
@@ -66,6 +67,7 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
+
     send_to_Arduino(data)
     msg = str(read_from_Arduino())
 

@@ -36,7 +36,7 @@ unique_num = 3
 read_file()
 UDP_IP = "169.254.129.26"
 UDP_PORT = 5005
-MESSAGE = "{} {} {} {}\n".format(floor, row, in_out, unique_num)
+MESSAGE = []
 print "UDP target IP:", UDP_IP
 print "UDP target port:", UDP_PORT
 print "message:", MESSAGE
