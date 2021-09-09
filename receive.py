@@ -49,11 +49,11 @@ def send_to_Arduino(data):
     # Sending floor and row to the Arduin
     global ser
 
-    for i in range(5):
     try:
-        message = data[i]
-        print(message)
-        ser.write(message.encode())
+        for i in range(5):
+            message = data[i]
+            print(message)
+            ser.write(message.encode())
     except:
         print("NO SERIAL")
 
@@ -67,8 +67,9 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
+    new_data = data.replace('\n', ' ').split(' ')
 
-    send_to_Arduino(data)
+    send_to_Arduino(new_data)
     msg = str(read_from_Arduino())
 
     sshtunnel.SSH_TIMEOUT = 10.0
