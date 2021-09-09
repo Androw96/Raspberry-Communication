@@ -46,22 +46,6 @@ def send_to_Arduino(data):
         print("NO SERIAL")
 
 
-sshtunnel.SSH_TIMEOUT = 5.0
-sshtunnel.TUNNEL_TIMEOUT = 5.0
-
-
-with sshtunnel.SSHTunnelForwarder(
-    ('ssh.pythonanywhere.com'),
-    ssh_username='Ozymandias', ssh_password='Androw96',
-    remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
-) as tunnel:
-    connection = MySQLdb.connect(
-        user='Ozymandias',
-        passwd='Androw96',
-        host='127.0.0.1', port=tunnel.local_bind_port,
-        db='Ozymandias$SmartWarehouseSystem',
-    )
-
 UDP_IP = "0.0.0.0"
 UDP_PORT = 5005
 print("waiting")
@@ -73,6 +57,20 @@ while True:
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
     send_to_Arduino(data)
     msg = str(read_from_Arduino())
+    sshtunnel.SSH_TIMEOUT = 5.0
+    sshtunnel.TUNNEL_TIMEOUT = 5.0
+
+    with sshtunnel.SSHTunnelForwarder(
+            ('ssh.pythonanywhere.com'),
+            ssh_username='Ozymandias', ssh_password='Androw96',
+            remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+    ) as tunnel:
+        connection = MySQLdb.connect(
+            user='Ozymandias',
+            passwd='Androw96',
+            host='127.0.0.1', port=tunnel.local_bind_port,
+            db='Ozymandias$SmartWarehouseSystem',
+        )
     while((msg != "64") or (msg != "40")):
         msg = str(read_from_Arduino())
         mycursor = connection.cursor()
@@ -80,6 +78,7 @@ while True:
         val = ("get_process", msg, "Process from Arduino")
         mycursor.execute(sql, val)
         connection.commit()
+
 
     data = 0
     
