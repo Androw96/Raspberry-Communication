@@ -57,38 +57,6 @@ def send_to_Arduino(data):
         print("NO SERIAL")'''
 
 
-<<<<<<< HEAD
-=======
-sshtunnel.SSH_TIMEOUT = 5.0
-sshtunnel.TUNNEL_TIMEOUT = 5.0
-
-try: 
-    with sshtunnel.SSHTunnelForwarder(
-        ('ssh.pythonanywhere.com'),
-        ssh_username='Ozymandias', ssh_password='Androw96',
-        remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
-    ) as tunnel:
-        connection = MySQLdb.connect(
-            user='Ozymandias',
-            passwd='Androw96',
-            host='127.0.0.1', port=tunnel.local_bind_port,
-            db='Ozymandias$SmartWarehouseSystem',
-        )
-except:
-    with sshtunnel.SSHTunnelForwarder(
-        ('ssh.pythonanywhere.com'),
-        ssh_username='Ozymandias', ssh_password='Androw96',
-        remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
-    ) as tunnel:
-        connection = MySQLdb.connect(
-            user='Ozymandias',
-            passwd='Androw96',
-            host='127.0.0.1', port=tunnel.local_bind_port,
-            db='Ozymandias$SmartWarehouseSystem',
-        )
-    
-
->>>>>>> 2cf0e19f7a9ab025fbf219b31180631de5ddfa9c
 UDP_IP = "0.0.0.0"
 UDP_PORT = 5005
 print("waiting")
@@ -100,9 +68,9 @@ while True:
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
     send_to_Arduino(data)
     msg = str(read_from_Arduino())
-<<<<<<< HEAD
-    sshtunnel.SSH_TIMEOUT = 5.0
-    sshtunnel.TUNNEL_TIMEOUT = 5.0
+
+    sshtunnel.SSH_TIMEOUT = 10.0
+    sshtunnel.TUNNEL_TIMEOUT = 10.0
 
     with sshtunnel.SSHTunnelForwarder(
             ('ssh.pythonanywhere.com'),
@@ -115,7 +83,6 @@ while True:
             host='127.0.0.1', port=tunnel.local_bind_port,
             db='Ozymandias$SmartWarehouseSystem',
         )
-=======
     print("message:")
     print(msg)       
     mycursor = connection.cursor()
@@ -123,9 +90,9 @@ while True:
     sql = "UPDATE System_App_get SET code = %s WHERE name = 'get_process';"
     val = (msg)
     mycursor.execute(sql, val)
+    connection.commit()
     print("sikeres excecute")
-    
->>>>>>> 2cf0e19f7a9ab025fbf219b31180631de5ddfa9c
+
     while((msg != "64") or (msg != "40")):
         msg = str(read_from_Arduino())
         sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
