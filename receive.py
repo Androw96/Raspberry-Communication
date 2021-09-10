@@ -14,6 +14,29 @@ def flush_buffer():
     for i in range(64):
         ser.read()
 
+def get_get(msg):
+    sshtunnel.SSH_TIMEOUT = 5.0
+    sshtunnel.TUNNEL_TIMEOUT = 5.0
+
+    with sshtunnel.SSHTunnelForwarder(
+            ('ssh.pythonanywhere.com'),
+            ssh_username='Ozymandias', ssh_password='Androw96',
+            remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+    ) as tunnel:
+        connection = MySQLdb.connect(
+            user='Ozymandias',
+            passwd='Androw96',
+            host='127.0.0.1', port=tunnel.local_bind_port,
+            db='Ozymandias$SmartWarehouseSystem',
+        )
+        # Do stuff
+        mycursor = connection.cursor()
+        sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
+        val = ("get_process", msg , "")
+        mycursor.execute(sql, val)
+        connection.commit()
+        print("Uploaded")
+        connection.close()
 
 def read_from_Arduino():
     message = {}
@@ -73,6 +96,7 @@ while True:
     print(new_data)
     send_to_Arduino(new_data)
     msg = str(read_from_Arduino())
+<<<<<<< HEAD
 
     sshtunnel.SSH_TIMEOUT = 100.0
     sshtunnel.TUNNEL_TIMEOUT = 100.0
@@ -97,16 +121,14 @@ while True:
     mycursor.execute(sql, val)
     connection.commit()
     print("sikeres excecute")
+=======
+    get_get(msg)
+>>>>>>> 97760d24549c3b2d1bf9c39571093f7fd2102c5b
 
     while((msg != "64") or (msg != "40")):
         msg = str(read_from_Arduino())
-        sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
-        val = ("get_process", msg, "Process from Arduino")
-        mycursor.execute(sql, val)
-        connection.commit()
+        get_get(msg)
         time.sleep(1)
 
-
     data = 0
-    
-    
+
