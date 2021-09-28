@@ -11,39 +11,50 @@ ser = serial.Serial(path, 19200)
 
 def flush_buffer():
     print("Deleting the buffer")
-    for i in range(64):
-        ser.read()
+    ser.read_all()
 
 def get_get(msg):
-    sshtunnel.SSH_TIMEOUT = 5.0
-    sshtunnel.TUNNEL_TIMEOUT = 5.0
+    try:
+        
+        sshtunnel.SSH_TIMEOUT = 10.0
+        sshtunnel.TUNNEL_TIMEOUT = 10.0
 
-    with sshtunnel.SSHTunnelForwarder(
-            ('ssh.pythonanywhere.com'),
-            ssh_username='Ozymandias', ssh_password='Androw96',
-            remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
-    ) as tunnel:
-        connection = MySQLdb.connect(
-            user='Ozymandias',
-            passwd='Androw96',
-            host='127.0.0.1', port=tunnel.local_bind_port,
-            db='Ozymandias$SmartWarehouseSystem',
-        )
-        # Do stuff
-        mycursor = connection.cursor()
-        sql = "INSERT INTO System_App_get (name, code, description) VALUES (%s, %s, %s)"
-        val = ("get_process", msg , "")
-        mycursor.execute(sql, val)
-        connection.commit()
-        print("Uploaded")
-        connection.close()
+        with sshtunnel.SSHTunnelForwarder(
+                ('ssh.pythonanywhere.com'),
+                ssh_username='Ozymandias', ssh_password='Androw96',
+                remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+        ) as tunnel:
+            connection = MySQLdb.connect(
+                user='Ozymandias',
+                passwd='Androw96',
+                host='127.0.0.1', port=tunnel.local_bind_port,
+                db='Ozymandias$SmartWarehouseSystem',
+            )
+            # Do stuff
+            mycursor = connection.cursor()
+            sql = "INSERT INTO System_App_get_process (name, code, description) VALUES (%s, %s, %s)"
+            val = ("get_process", msg , "")
+            mycursor.execute(sql, val)
+            connection.commit()
+            print("Uploaded")
+            connection.close()
+    except MySQLdb.OperationalError as error:
+            print("Operational error!")
+            get_get(msg)
+            
+    except MySQLdb.IntegrityError as error:
+            print("IntegrityError")
+            
+
 
 def read_from_Arduino():
     message = {}
     start_marker = 130
     end_marker = 131
-    
+    trigger_codes = [23, 28, 30, 31, 40, 41, 42, 43, 46, 47, 51, 55, 57, 58, 63, 64]
+    flush_buffer()
     while (1):
+        print("Olvasok: ")
         i = ser.read().hex()
         i = int(i, 16)
         print(i)
@@ -55,29 +66,33 @@ def read_from_Arduino():
                 i = ser.read().hex()
                 i = int(i, 16)
                 message[j] = i
-                print(message[j])
                 
             i = ser.read().hex()
             i = int(i, 16)
             if (i != end_marker):
-                # Order fail
-                print(message)
+                print("Not the Endmarker I am looking for!")
             else:
                 # Right Order
-                flush_buffer()
-                return message[0]
+                if message[0] in trigger_codes:
+                    #flush_buffer()
+                    return message[0]
 
 
 def send_to_Arduino(data):
     # Sending floor and row to the Arduin
     global ser
-
-    #try:
-    for i in range(5):
-            message = int(data[i])
-            ser.write(message)
-    '''except:
-        print("NO SERIAL")'''
+    message = data
+    for i in range(0, len(data)):
+        print(message[i])
+        message[i] = int(data[i])
+        
+    message.insert(0, 130)
+    message.append(0)
+    message.append(131)
+    message = bytes(message)
+    for i in range(20):
+        ser.write(message)
+        print("{}. message: {}".format(i,message))
 
 
 UDP_IP = "0.0.0.0"
@@ -88,46 +103,30 @@ sock = socket.socket(socket.AF_INET, # Internet
 sock.bind((UDP_IP, UDP_PORT))
 
 while True:
+    print("Ready")
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
     data = data.decode('utf-8')
     new_data = data.replace('\n', ' ').split(' ')
-    new_data.insert(0, 130)
-    new_data.append(131)
+    
     print(new_data)
+    
     send_to_Arduino(new_data)
+    
     msg = str(read_from_Arduino())
-<<<<<<< HEAD
-
-    sshtunnel.SSH_TIMEOUT = 100.0
-    sshtunnel.TUNNEL_TIMEOUT = 100.0
-
-    with sshtunnel.SSHTunnelForwarder(
-            ('ssh.pythonanywhere.com'),
-            ssh_username='Ozymandias', ssh_password='Androw96',
-            remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
-    ) as tunnel:
-        connection = MySQLdb.connect(
-            user='Ozymandias',
-            passwd='Androw96',
-            host='127.0.0.1', port=tunnel.local_bind_port,
-            db='Ozymandias$SmartWarehouseSystem',
-        )
-    print("message:")
-    print(msg)       
-    mycursor = connection.cursor()
-    print("cursor")
-    sql = "UPDATE System_App_get SET code = %s WHERE name = 'get_process';"
-    val = (msg)
-    mycursor.execute(sql, val)
-    connection.commit()
-    print("sikeres excecute")
-=======
     get_get(msg)
->>>>>>> 97760d24549c3b2d1bf9c39571093f7fd2102c5b
+    pre_msg = msg
 
-    while((msg != "64") or (msg != "40")):
+    while(True):
+        print("Checking")
+        if((msg == "64") or (msg == "40") or (msg == "55")):
+            break
         msg = str(read_from_Arduino())
-        get_get(msg)
+        if(pre_msg != msg):
+            print("pre_msg: {}".format(pre_msg))
+            pre_msg = msg
+            print("msg: {}".format(msg))
+            get_get(msg)
+            
         time.sleep(1)
 
     data = 0
