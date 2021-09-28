@@ -72,13 +72,12 @@ def send_to_Arduino(data):
     # Sending floor and row to the Arduin
     global ser
 
-    try:
-        for i in range(5):
-            message = data[i]
-            print(message)
-            ser.write(message.encode())
-    except:
-        print("NO SERIAL")
+    #try:
+    for i in range(5):
+            message = int(data[i])
+            ser.write(message)
+    '''except:
+        print("NO SERIAL")'''
 
 
 UDP_IP = "0.0.0.0"
@@ -90,11 +89,41 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
     data, addr = sock.recvfrom(1024) #BUFFERSIZE
+    data = data.decode('utf-8')
     new_data = data.replace('\n', ' ').split(' ')
-
+    new_data.insert(0, 130)
+    new_data.append(131)
+    print(new_data)
     send_to_Arduino(new_data)
     msg = str(read_from_Arduino())
+<<<<<<< HEAD
     get_get(msg)
+=======
+
+    sshtunnel.SSH_TIMEOUT = 100.0
+    sshtunnel.TUNNEL_TIMEOUT = 100.0
+
+    with sshtunnel.SSHTunnelForwarder(
+            ('ssh.pythonanywhere.com'),
+            ssh_username='Ozymandias', ssh_password='Androw96',
+            remote_bind_address=('Ozymandias.mysql.pythonanywhere-services.com', 3306)
+    ) as tunnel:
+        connection = MySQLdb.connect(
+            user='Ozymandias',
+            passwd='Androw96',
+            host='127.0.0.1', port=tunnel.local_bind_port,
+            db='Ozymandias$SmartWarehouseSystem',
+        )
+    print("message:")
+    print(msg)       
+    mycursor = connection.cursor()
+    print("cursor")
+    sql = "UPDATE System_App_get SET code = %s WHERE name = 'get_process';"
+    val = (msg)
+    mycursor.execute(sql, val)
+    connection.commit()
+    print("sikeres excecute")
+>>>>>>> 7fb396219795fea4a7e55ef4b500cc31309cf36f
 
     while((msg != "64") or (msg != "40")):
         msg = str(read_from_Arduino())
