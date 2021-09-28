@@ -1,3 +1,3 @@
-kulcs: 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
+kulcs: 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
 curl -u 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:x-oauth https://api.github.com/Androw96
-git push https://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@github.com/Androw96/Raspberry-Communication.git
+git push https://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@github.com/Androw96/Raspberry-Communication.git
